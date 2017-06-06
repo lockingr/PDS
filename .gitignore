@@ -3,3 +3,13 @@
 ################################################################################
 
 /src/PDS.Domain/bin/Debug/netcoreapp1.1
+/src/PDS.Domain/obj
+/.vs
+/src/PDS.Domain/obj
+*.user
+/src/PDS.Services/bin/Debug/netcoreapp1.1
+/src/PDS.Services/obj
+/src/PDS.Tests/bin/Debug/netcoreapp1.1
+/src/PDS.Tests/obj
+/src/PDS.UI.Web/bin/Debug/netcoreapp1.1
+/src/PDS.UI.Web/obj
