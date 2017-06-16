@@ -1,0 +1,26 @@
+﻿<h1 class="text-center">House of Commons Order of Business </h1>
+
+<div class="row">
+    
+    <div *ngFor="let item of calendarEvents" class="col-md-2" >
+        <div class="panel panel-info">
+            <div class="panel-heading">{{ item.dayOfTheWeek }}</div>
+            <div class="panel-body">
+                <dl>
+                    <dt>Start</dt>
+                    <dd>{{ item.startDate }}</dd>
+                </dl>
+                <dl>
+                    <dt>End</dt>
+                    <dd>{{ item.endDate }}</dd>
+                </dl>
+                <dl>
+                    <dt>Description</dt>
+                    <dd>{{ item.description }}</dd>
+                </dl>
+
+            </div>
+        </div>
+    </div>        
+    
+</div>

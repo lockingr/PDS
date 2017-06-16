@@ -1,58 +1,124 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using PDS.Domain;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace PDS.Services
 {
-    public class HouseCommonsBusinessService : IHouseCommonsBusinessService
+    public class HouseCommonsBusinessService 
     {
-        public IEnumerable<BusinessItem> GetBusinessCalendarByDate(DateTime startDate, DateTime endDate)
+        private readonly string _calendarEndPoint;
+        private readonly string _memberNamesEndPoint;
+        private readonly string _calendarURI;
+        private readonly string _membersNameURI;
+
+
+        public HouseCommonsBusinessService(string calendarURI,
+                                           string membersNameURI, 
+                                           string calendarEndPoint, 
+                                           string memberNamesEndPoint)
         {
-            // Get Calendar Event for that date range supplied
+            _calendarURI = calendarURI;
 
-            // Get members attending (if any)
+            _membersNameURI = membersNameURI;
 
-            // Build BusinessItem object with calendar event and 
+            _calendarEndPoint = calendarEndPoint;
 
-            // Add to BusinessItem collection
-
-            //send back top client json
-            throw new NotImplementedException();
+            _memberNamesEndPoint = memberNamesEndPoint;
 
         }
 
-        private IEnumerable<CalendarEvent> GetCalendarEvent(DateTime startDate, DateTime endDate)
+        /// <summary>
+        /// Gets a collection of business items using start and end dates.
+        /// </summary>
+
+        public Collection<BusinessItem> GetCalendarOfEventsByDate(DateTime startDate, DateTime endDate)
         {
-            using (HttpClient client = new HttpClient())
+            Collection<BusinessItem> businessItems = new Collection<BusinessItem>();
+            Collection<CalendarEvent> calendarEvents;
+
+            calendarEvents = GetCalendarEvent(startDate, endDate);
+
+            foreach (var calendarEvent in calendarEvents)
             {
-                client.BaseAddress = new Uri("http://localhost:49387");
-                MediaTypeWithQualityHeaderValue contentType = new MediaTypeWithQualityHeaderValue("application/json");
-                client.DefaultRequestHeaders.Accept.Add(contentType);
-                HttpResponseMessage response = client.GetAsync("/api/customerservice").Result;
-                string stringData = response.Content.ReadAsStringAsync().Result;
-                Collection<CalendarEvent> data = JsonConvert.DeserializeObject<Collection<CalendarEvent>>(stringData);
-                return data;
+
+                var businessItem = new BusinessItem
+                {
+                    Description = calendarEvent.Description,
+                    StartDate = DateTime.Parse(calendarEvent.StartDate),
+                    EndDate = DateTime.Parse(calendarEvent.EndDate)
+
+                };
+
+                if (calendarEvent.Members.Count > 0)
+                {
+                    var member = GetMemberById(calendarEvent.Members[0].Id);
+
+                    businessItem.Members.Add(member);
+                }
+
+                businessItems.Add(businessItem);
             }
+
+            return businessItems;
         }
 
-        IEnumerable<CalendarEvent> IHouseCommonsBusinessService.GetCalendarEvent(DateTime startDate, DateTime endDate)
+        private Collection<CalendarEvent> GetCalendarEvent(DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            var endPoint = string.Format(_calendarEndPoint,
+                                          startDate.Date.ToString("yyyy-MM-dd"),
+                                          endDate.Date.ToString("yyyy-MM-dd"));
+
+            var jsonCalendarEventData = ServiceHelper(_calendarURI, endPoint);
+
+            Collection<CalendarEvent> calendarEvents = JsonConvert.DeserializeObject<Collection<CalendarEvent>>(jsonCalendarEventData);
+
+            return calendarEvents;
         }
 
-        private Member GetMember(int id)
+        private Member GetMemberById(int id)
         {
-            throw new NotImplementedException();
+            var endPoint = string.Format(_memberNamesEndPoint, id.ToString());
+
+            var jsonMemeberData = ServiceHelper(_membersNameURI, endPoint);
+
+            var members = JsonConvert.DeserializeObject<Rootobject>(jsonMemeberData).Members.Member;
+
+            return members;
         }
 
-        Member IHouseCommonsBusinessService.GetMember(int id)
+        private string ServiceHelper(string uri, string endPoint)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(uri);
+
+                    MediaTypeWithQualityHeaderValue contentType = new MediaTypeWithQualityHeaderValue("application/json");
+
+                    client.DefaultRequestHeaders.Accept.Add(contentType);
+
+                    HttpResponseMessage response = client.GetAsync(endPoint).Result;
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        return response.StatusCode.ToString();
+
+                    string jsonData = response.Content.ReadAsStringAsync().Result;
+                    
+                    return jsonData;
+                }
+
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error contacting end point");
+            }
+                        
         }
+
     }
 }

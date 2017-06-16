@@ -6,6 +6,12 @@ using System.Text;
 namespace PDS.Domain
 {
 
+    public class MemberInfo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
     public class Committee
     {
         public int Id { get; set; }
@@ -13,6 +19,9 @@ namespace PDS.Domain
         public List<object> Inquiries { get; set; }
     }
 
+    /// <summary>
+    /// Domain class for calendar event
+    /// </summary>
     public class CalendarEvent
     {
         public int Id { get; set; }
@@ -31,13 +40,9 @@ namespace PDS.Domain
         public bool HasSpeakers { get; set; }
         public Committee Committee { get; set; }
         public List<object> Tags { get; set; }
-        public IEnumerable<Member> Members { get; set; }
+        public Collection<MemberInfo> Members { get; set; }
         public List<object> Metadata { get; set; }
         public string SummarisedDetails { get; set; }
-
-        public CalendarEvent()
-        {
-            Members = new Collection<Member>();
-        }
+        
     }
 }

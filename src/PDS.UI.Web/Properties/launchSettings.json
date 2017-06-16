@@ -1,9 +1,9 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:53099/",
+      "applicationUrl": "http://localhost:59753/",
       "sslPort": 0
     }
   },
@@ -15,13 +15,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "GDS.UI.Web": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:53100"
+    "PDS.UI.Web": {
+      "commandName": "Project"
     }
   }
 }
