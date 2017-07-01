@@ -11,11 +11,18 @@ export class CalendarComponent implements OnInit {
 
     calendarEvents: CalendarEvent[];
 
+    query: any = {};
+
     constructor(private dataService: DataService) { }
 
     ngOnInit() {
-        
-        this.calendarEvents = this.dataService.getEvents();
+
+        // debug
+        this.query.startDate = '2017-06-12';
+        this.query.endDate =  '2017-06-12';
+                            
+        this.dataService.getEvents(this.query)
+            .subscribe(calendarEvents => this.calendarEvents = calendarEvents);
     }
 
 }

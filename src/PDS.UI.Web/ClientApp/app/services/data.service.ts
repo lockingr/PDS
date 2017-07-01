@@ -1,31 +1,30 @@
 ﻿import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
 import { CalendarEvent } from './calendarevent';
-
-
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class DataService {
+            
+    constructor(private http: Http) { }
 
-    public calendarEvents = [        
-        new CalendarEvent(this.getDayOfWeek('2017-06-14'),
-                          '12/06/2017',
-                          '12/06/2017',
-                              `Consideration of Private Members Bills. 
-                               Proceedings will be interrupted at
-                               11am for the Urgent Questions.`),
-        new CalendarEvent(this.getDayOfWeek('2017-06-15'),
-                          '19/06/2017',
-                          '19/06/2017',
-                          `Compulsory Emergency First Aid 
-                           Education (State-funded Secondary Schools) Bill - 2nd
-                           reading (day 1)`)
-    ];
+    public getEvents(filter) {
+    
+        return this.http.get("/api/calendar" + '?' + this.toQueryString(filter))
+            .map(res => res.json());
         
-    constructor() { }
+    }
 
-    public getEvents(): any {
-        return this.calendarEvents;
-        
+    toQueryString(obj) {
+        var parts = [];
+
+        for (var property in obj) {
+            var value = obj[property];
+            if (value != null && value != undefined)
+                parts.push(encodeURIComponent(property) + '=' + encodeURIComponent(value));
+        }
+
+        return parts.join('&')
     }
 
     private getDayOfWeek(date: string): string {

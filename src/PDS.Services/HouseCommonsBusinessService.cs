@@ -16,23 +16,20 @@ namespace PDS.Services
         private readonly string _membersNameURI;
 
 
-        public HouseCommonsBusinessService(string calendarURI,
-                                           string membersNameURI, 
-                                           string calendarEndPoint, 
-                                           string memberNamesEndPoint)
+        public HouseCommonsBusinessService(ServiceConfig serviceConfig)
         {
-            _calendarURI = calendarURI;
+            _calendarURI = serviceConfig.CalendarURI;
 
-            _membersNameURI = membersNameURI;
+            _membersNameURI = serviceConfig.MembersNameURI;
 
-            _calendarEndPoint = calendarEndPoint;
+            _calendarEndPoint = serviceConfig.CalendarEndPoint;
 
-            _memberNamesEndPoint = memberNamesEndPoint;
+            _memberNamesEndPoint = serviceConfig.MemberNamesEndPoint;
 
         }
 
         /// <summary>
-        /// Gets a collection of business items using start and end dates.
+        /// Gets a collection of business items using the start and end dates.
         /// </summary>
 
         public Collection<BusinessItem> GetCalendarOfEventsByDate(DateTime startDate, DateTime endDate)

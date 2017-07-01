@@ -11,19 +11,18 @@ namespace PDS.Tests
 {
     [TestClass]
     public class PDSTests
-    {
-        private string _calendarUri;
-        private string _memberNamesUri;
-        private string _calendarEndPoint;
-        private string _memberNamesEndPoint;
+    {        
+        private ServiceConfig _serviceConfig;
 
         [TestInitialize]
         public void SetUp()
         {
-            _calendarUri = "http://service.calendar.parliament.uk/calendar/events/";
-            _memberNamesUri = "http://data.parliament.uk/membersdataplatform/services/mnis/";
-            _calendarEndPoint = "list.json?startdate={0}&enddate={1}";
-            _memberNamesEndPoint = "members/query/id={0}/";
+            _serviceConfig = new ServiceConfig(
+                    "http://service.calendar.parliament.uk/calendar/events/",
+                    "http://data.parliament.uk/membersdataplatform/services/mnis/",
+                    "list.json?startdate={0}&enddate={1}",
+                    "members/query/id={0}/"
+                );            
         }
 
         [TestMethod]
@@ -32,10 +31,7 @@ namespace PDS.Tests
             // Arrange
             DateTime startDate = DateTime.Parse("2017-06-05"); 
             DateTime endDate = DateTime.Parse("2017-06-19"); 
-            HouseCommonsBusinessService service = new HouseCommonsBusinessService(_calendarUri,
-                                                                                  _memberNamesUri,
-                                                                                  _calendarEndPoint,
-                                                                                  _memberNamesEndPoint);
+            HouseCommonsBusinessService service = new HouseCommonsBusinessService(_serviceConfig);
 
             // Act
             var items =  service.GetCalendarOfEventsByDate(startDate, endDate);
@@ -51,10 +47,7 @@ namespace PDS.Tests
             // Arrange
             DateTime startDate = DateTime.Parse("2017-04-01");
             DateTime endDate = DateTime.Parse("2017-04-30");
-            HouseCommonsBusinessService service = new HouseCommonsBusinessService(_calendarUri,
-                                                                                  _memberNamesUri,
-                                                                                  _calendarEndPoint,
-                                                                                  _memberNamesEndPoint);
+            HouseCommonsBusinessService service = new HouseCommonsBusinessService(_serviceConfig);
 
             // Act
             var items = service.GetCalendarOfEventsByDate(startDate, endDate);
@@ -70,10 +63,7 @@ namespace PDS.Tests
             // Arrange
             DateTime startDate = DateTime.Parse("2017-06-05");
             DateTime endDate = DateTime.Parse("2017-06-11");
-            HouseCommonsBusinessService service = new HouseCommonsBusinessService(_calendarUri,
-                                                                                  _memberNamesUri,
-                                                                                  _calendarEndPoint,
-                                                                                  _memberNamesEndPoint);
+            HouseCommonsBusinessService service = new HouseCommonsBusinessService(_serviceConfig);
 
             // Act
             var items = service.GetCalendarOfEventsByDate(startDate, endDate);
